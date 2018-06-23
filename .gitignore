@@ -1,0 +1,4 @@
+/node_modules
+/src/piano-roll-template.ts
+/www/*.js
+/www/*.map
