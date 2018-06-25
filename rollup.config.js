@@ -1,15 +1,15 @@
 import typescript from 'rollup-plugin-typescript'
-import babel from 'rollup-plugin-babel'
+// import babel from 'rollup-plugin-babel'
 
 export default {
-  input: 'src/script.ts',
+  input: 'src/scripts/script.ts',
   output: {
-    file: 'www/script.js',
+    file: 'www/scripts/script.js',
     format: 'esm',
     sourcemap: 'sourceMap'
   },
   plugins: [
-    typescript(),
+    typescript({typescript:require('typescript')}),
     /* babel({
       exclude: 'node_modules/**'
     }) */

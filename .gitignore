@@ -1,4 +1,7 @@
 /node_modules
-/src/piano-roll-template.ts
-/www/*.js
-/www/*.map
+/src/scripts/piano-roll-template.js
+/src/scripts/piano-roll-template.html
+/www/scripts/*
+/www/styles/*
+/.rpt2_cache
+!.gitkeep

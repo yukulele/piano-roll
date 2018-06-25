@@ -1,5 +1,12 @@
 {
+  "files": [
+    "src/scripts/script.ts"
+  ],
+  
   "compilerOptions": {
-    "target": "es6"
+    "outDir": "www/scripts",
+    "target": "es6",
+    "module": "esnext",
+    "strict": true
   }
 }

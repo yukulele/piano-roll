@@ -1,0 +1,109 @@
+.pianoroll
+.pianoroll *
+.pianoroll *:before
+.pianoroll *:after{
+  box-sizing border-box
+}
+.pianoroll
+  width 100%
+  height 100%
+  position relative
+  --zoom-x 100
+  --zoom-y 10
+  --x-sub 4
+  --key-count 127
+  --line-width 1px
+
+.pianoroll-viewport
+  position absolute
+  top 0
+  left 0
+  right 0
+  bottom 0
+  overflow hidden
+  overflow-y scroll
+
+.pianoroll-page
+  width 100%
+  --key-size calc(var(--zoom-y) * 1px)
+  --octave-size calc(var(--key-size) * 12)
+  --white-size calc((var(--octave-size) / 7))
+  height calc(var(--key-count) * var(--key-size))
+  position relative
+
+.pianoroll-keyboard
+  background-color #ccc
+  --white1-bg:  repeating-linear-gradient(to top, black, black var(--line-width), transparent 0, transparent var(--octave-size))
+  --white-bg:  repeating-linear-gradient(to top, grey, grey var(--line-width), transparent 0, transparent var(--octave-size))
+  --black-bg: repeating-linear-gradient(to top, black 0, black var(--key-size), transparent 0, transparent var(--octave-size))
+  background-image:
+    var(--white1-bg),
+      var(--black-bg),
+    var(--white-bg),
+      var(--black-bg),
+    var(--white-bg),
+    var(--white-bg),
+      var(--black-bg),
+    var(--white-bg),
+      var(--black-bg),
+    var(--white-bg),
+      var(--black-bg),
+    var(--white-bg)
+  background-repeat: no-repeat
+  background-position :
+    right  0px bottom calc(var(--key-size) * 0),
+    right 20px bottom calc(var(--key-size) * 1),
+    right  0px bottom calc(var(--key-size) * 5 / 3),
+    right 20px bottom calc(var(--key-size) * 3),
+    right  0px bottom calc(var(--key-size) * 5 / 3 * 2),
+    right  0px bottom calc(var(--key-size) * 5),
+    right 20px bottom calc(var(--key-size) * 6),
+    right  0px bottom calc(var(--key-size) * (5+7/4)),
+    right 20px bottom calc(var(--key-size) * 8),
+    right  0px bottom calc(var(--key-size) * (5+7/4*2)),
+    right 20px bottom calc(var(--key-size) * 10),
+    right  0px bottom calc(var(--key-size) * (5+7/4*3))
+  border-right var(--line-width) solid black
+  height 100%
+  width 60px
+  z-index 1
+  position relative
+
+.pianoroll-roll-viewport
+  position absolute
+  top 0
+  left 60px
+  right 0
+  bottom 0
+  overflow hidden
+
+
+.pianoroll-roll-page
+  height 100%
+  width 300%
+  background-color #666
+  
+  --sep: repeating-linear-gradient(to top, #444, #444 var(--line-width), transparent 0, transparent var(--octave-size))
+  --bg: repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
+  background-image:
+    repeating-linear-gradient(to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px)),
+    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*1px)),
+    var(--sep),
+    var(--sep),
+    var(--bg),
+    var(--bg),
+    var(--bg),
+    var(--bg),
+    var(--bg)
+  
+  background-repeat: no-repeat
+  background-position:
+    left 0px bottom calc(var(--key-size) * 0),
+    left 0px bottom calc(var(--key-size) * 0),
+    left 0px bottom calc(var(--key-size) * 0),
+    left 0px bottom calc(var(--key-size) * 5),
+    left 0px bottom calc(var(--key-size) * 1),
+    left 0px bottom calc(var(--key-size) * 3),
+    left 0px bottom calc(var(--key-size) * 6),
+    left 0px bottom calc(var(--key-size) * 8),
+    left 0px bottom calc(var(--key-size) * 10)

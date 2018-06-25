@@ -4,9 +4,13 @@
   "description": "",
   "main": "piano-roll.js",
   "dependencies": {
+    "browser-sync": "^2.24.5",
     "common-tags": "^1.8.0",
     "pug": "^2.0.3",
-    "pug-cli": "^1.0.0-alpha6"
+    "pug-cli": "^1.0.0-alpha6",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-plugin-typescript2": "^0.15.0",
+    "typescript": "^2.9.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -14,12 +18,10 @@
     "babel-preset-env": "^1.7.0",
     "rollup": "^0.61.1",
     "rollup-plugin-babel": "^3.0.4",
-    "rollup-plugin-typescript": "^0.8.1"
+    "stylus": "^0.54.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pug": "pug src/piano-roll-template.pug --client --no-debug -E ts -n '_(){};export default (_?)=>__(_);function __'",
-    "rollup": "rollup --config"
+    "build": "make"
   },
   "keywords": [],
   "author": "",
