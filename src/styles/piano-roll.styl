@@ -8,12 +8,11 @@
   width 100%
   height 100%
   position relative
-  --zoom-x 100
-  --zoom-y 10
+  --zoom-x 1
+  --zoom-y 1
   --x-sub 4
   --key-count 127
   --line-width 1px
-
 .pianoroll-viewport
   position absolute
   top 0
@@ -25,12 +24,21 @@
 
 .pianoroll-page
   width 100%
-  --key-size calc(var(--zoom-y) * 1px)
+  --key-size calc(var(--zoom-y) * 10px)
   --octave-size calc(var(--key-size) * 12)
   --white-size calc((var(--octave-size) / 7))
-  height calc(var(--key-count) * var(--key-size))
+  --keyboard-height calc(var(--key-count) * var(--key-size))
   position relative
-
+  min-height 100%
+  height var(--keyboard-height)
+.pianoroll-cursor
+  background-color #c4c6
+  pointer-events none
+  position absolute
+  top var(--octave-size)
+  left 0
+  right 0
+  height var(--key-size)
 .pianoroll-keyboard
   background-color #ccc
   --white1-bg:  repeating-linear-gradient(to top, black, black var(--line-width), transparent 0, transparent var(--octave-size))
@@ -50,7 +58,7 @@
       var(--black-bg),
     var(--white-bg)
   background-repeat: no-repeat
-  background-position :
+  background-position:
     right  0px bottom calc(var(--key-size) * 0),
     right 20px bottom calc(var(--key-size) * 1),
     right  0px bottom calc(var(--key-size) * 5 / 3),
@@ -64,9 +72,8 @@
     right 20px bottom calc(var(--key-size) * 10),
     right  0px bottom calc(var(--key-size) * (5+7/4*3))
   border-right var(--line-width) solid black
-  height 100%
+  height var(--keyboard-height)
   width 60px
-  z-index 1
   position relative
 
 .pianoroll-roll-viewport
@@ -76,19 +83,23 @@
   right 0
   bottom 0
   overflow hidden
-
+  overflow-x scroll
+  scroll-d
+  min-height 100%
 
 .pianoroll-roll-page
-  height 100%
+  height var(--keyboard-height)
   width 300%
   background-color #666
   
   --sep: repeating-linear-gradient(to top, #444, #444 var(--line-width), transparent 0, transparent var(--octave-size))
+  --sep-dark: repeating-linear-gradient(to top, #000, #000 var(--line-width), transparent 0, transparent var(--octave-size))
   --bg: repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
   background-image:
-    repeating-linear-gradient(to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px)),
-    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*1px)),
-    var(--sep),
+    repeating-linear-gradient(
+      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*100px)),
+    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*100px)),
+    var(--sep-dark),
     var(--sep),
     var(--bg),
     var(--bg),

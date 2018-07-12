@@ -21,7 +21,8 @@
     "stylus": "^0.54.5"
   },
   "scripts": {
-    "build": "make"
+    "build": "make",
+    "serve": "npx browser-sync start -c bs-config.js"
   },
   "keywords": [],
   "author": "",
