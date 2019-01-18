@@ -24,7 +24,7 @@
 
 .pianoroll-page
   width 100%
-  --key-size calc(var(--zoom-y) * 10px)
+  --key-size calc(var(--zoom-y) * 1px)
   --octave-size calc(var(--key-size) * 12)
   --white-size calc((var(--octave-size) / 7))
   --keyboard-height calc(var(--key-count) * var(--key-size))
@@ -84,7 +84,6 @@
   bottom 0
   overflow hidden
   overflow-x scroll
-  scroll-d
   min-height 100%
 
 .pianoroll-roll-page
@@ -97,8 +96,8 @@
   --bg: repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
   background-image:
     repeating-linear-gradient(
-      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*100px)),
-    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*100px)),
+      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px)),
+    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*1px)),
     var(--sep-dark),
     var(--sep),
     var(--bg),

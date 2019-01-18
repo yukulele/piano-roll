@@ -26,6 +26,6 @@ build: www/scripts/script.js $(STYLUS_DEST)
 watch:
 	@echo 'watching for change'
 	@echo 'press ctrl+C to stop'
-	@while true; do make --silent ; sleep 0.5; done
+	@while true; do ${MAKE} --silent ; sleep 0.5; done
 
 .PHONY: default clear watch build
