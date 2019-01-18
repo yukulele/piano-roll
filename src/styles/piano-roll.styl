@@ -13,6 +13,7 @@
   --x-sub 4
   --key-count 127
   --line-width 1px
+  --cursor-pos 30
 .pianoroll-viewport
   position absolute
   top 0
@@ -35,7 +36,7 @@
   background-color #c4c6
   pointer-events none
   position absolute
-  top var(--octave-size)
+  top calc(var(--cursor-pos) * var(--key-size))
   left 0
   right 0
   height var(--key-size)
@@ -95,6 +96,7 @@
   --sep-dark: repeating-linear-gradient(to top, #000, #000 var(--line-width), transparent 0, transparent var(--octave-size))
   --bg: repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
   background-image:
+    linear-gradient(to right, #0ff4, #0ff0 8px),
     repeating-linear-gradient(
       to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px)),
     repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*1px)),
@@ -108,6 +110,7 @@
   
   background-repeat: no-repeat
   background-position:
+    left,
     left 0px bottom calc(var(--key-size) * 0),
     left 0px bottom calc(var(--key-size) * 0),
     left 0px bottom calc(var(--key-size) * 0),

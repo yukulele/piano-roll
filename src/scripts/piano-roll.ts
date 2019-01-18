@@ -20,10 +20,14 @@ export default class PianoRoll {
   get element() {
     return this.elms._
   }
-
   mousemove(event: MouseEvent) {
     this.mouse.x = event.layerX
-    this.mouse.x = event.layerY
+    this.mouse.y = event.layerY
+    this.updateCursor()
+  }
+  updateCursor() {
+    const value = Math.floor(this.mouse.y / this.size.y)
+    this.elms._.style.setProperty('--cursor-pos', value.toString())
   }
   private wheel(event: WheelEvent) {
     event.preventDefault()
@@ -35,6 +39,7 @@ export default class PianoRoll {
       return
     }
     this.scroll(event.deltaY * 10, event.shiftKey ? 'y' : 'x')
+    this.mousemove(event)
   }
   private getZoom(axe: 'x' | 'y') {
     return this.zoom[axe]
@@ -42,8 +47,9 @@ export default class PianoRoll {
   private setZoom(axe: 'x' | 'y', zoom = 0) {
     this.zoom[axe] = zoom
     const prop = '--zoom-' + axe
-    const value = this.zoomToSize(axe, zoom)
-    this.elms._.style.setProperty(prop, value.toString())
+    this.size[axe] = this.zoomToSize(axe, zoom)
+    this.elms._.style.setProperty(prop, this.size[axe].toString())
+    this.updateCursor()
   }
   private zoomToSize(axe: 'x' | 'y', zoom = 0) {
     return this.zoomFactor ** zoom * this.defaultSize[axe]
