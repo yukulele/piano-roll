@@ -8,15 +8,15 @@ www/%.css: src/%.styl
 	@echo "stylus: $< ➜ $@"
 	npx stylus < $< > $@
 
-src/scripts/piano-roll-template.js: src/scripts/piano-roll-template.pug
-	npx pug src/scripts/piano-roll-template.pug --client --no-debug -E js -n '_(){};export default (_)=>__(_);function __'
+src/scripts/pianoRollTemplate.js: src/scripts/pianoRollTemplate.pug
+	npx pug src/scripts/pianoRollTemplate.pug --client --no-debug -E js -n '_(){};export default (_)=>__(_);function __'
 
-www/scripts/script.js: src/scripts/piano-roll-template.js $(wildcard src/scripts/*.ts)
+www/scripts/script.js: src/scripts/pianoRollTemplate.js $(wildcard src/scripts/*.ts)
 	npx rollup --config
 
 clear:
 	rm -f \
-		src/scripts/piano-roll-template.js \
+		src/scripts/pianoRollTemplate.js \
 		www/scripts/script.js \
 		www/scripts/script.js.map \
 		$(STYLUS_DEST)

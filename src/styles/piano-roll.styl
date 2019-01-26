@@ -88,18 +88,23 @@
   min-height 100%
 
 .pianoroll-roll-page
-  height var(--keyboard-height)
   width 300%
-  background-color #666
-  
+  height var(--keyboard-height)
+  position relative
+.pianoroll-roll-keys
+.pianoroll-roll-time
+  position absolute
+  top 0
+  left 0
+  right 0
+  bottom 0
+  background-repeat: no-repeat
+.pianoroll-roll-keys
+  --bg: repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
   --sep: repeating-linear-gradient(to top, #444, #444 var(--line-width), transparent 0, transparent var(--octave-size))
   --sep-dark: repeating-linear-gradient(to top, #000, #000 var(--line-width), transparent 0, transparent var(--octave-size))
-  --bg: repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
+  background-color #666
   background-image:
-    linear-gradient(to right, #0ff4, #0ff0 8px),
-    repeating-linear-gradient(
-      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px)),
-    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*1px)),
     var(--sep-dark),
     var(--sep),
     var(--bg),
@@ -107,12 +112,8 @@
     var(--bg),
     var(--bg),
     var(--bg)
-  
-  background-repeat: no-repeat
+
   background-position:
-    left,
-    left 0px bottom calc(var(--key-size) * 0),
-    left 0px bottom calc(var(--key-size) * 0),
     left 0px bottom calc(var(--key-size) * 0),
     left 0px bottom calc(var(--key-size) * 5),
     left 0px bottom calc(var(--key-size) * 1),
@@ -120,3 +121,14 @@
     left 0px bottom calc(var(--key-size) * 6),
     left 0px bottom calc(var(--key-size) * 8),
     left 0px bottom calc(var(--key-size) * 10)
+.pianoroll-roll-time
+  background-image:
+    linear-gradient(to right, #0ff4, #0ff0 8px),
+    repeating-linear-gradient(
+      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px)),
+    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*1px))
+
+  background-position:
+    left,
+    left 0px bottom calc(var(--key-size) * 0),
+    left 0px bottom calc(var(--key-size) * 0)
