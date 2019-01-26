@@ -6,17 +6,20 @@ type selection<T> = { [K in keyof T | '_']: HTMLElement };
 export default class PianoRoll {
   private zoomFactor = 1.2;
   private zoom = { x: 0, y: 0 };
-  private defaultSize = { x: 100, y: 10 };
+  private defaultSize = { x: 30, y: 10 };
   private size = { x: 0, y: 0 };
   private mouse = { x: 0, y: 0 };
+  private cursor = { x: 0, y: 0 };
   private elms = this.selection();
   constructor() {
     this.resize();
     window.addEventListener('resize', () => this.resize());
+
     this.elms.rollViewport.addEventListener('wheel', event =>
       this.wheel(event),
     );
     this.elms._.addEventListener('mousemove', event => this.mousemove(event));
+    this.elms._.addEventListener('click', event => this.click(event));
     this.setZoom('x', this.zoom.x);
     this.setZoom('y', this.zoom.y);
   }
@@ -24,13 +27,24 @@ export default class PianoRoll {
     return this.elms._;
   }
   public mousemove(event: MouseEvent) {
-    this.mouse.x = event.layerX;
-    this.mouse.y = event.layerY;
+    const rect = this.elms.rollPage.getBoundingClientRect();
+    this.mouse.x = event.pageX - rect.left;
+    this.mouse.y = event.pageY - rect.top;
     this.updateCursor();
   }
   public updateCursor() {
-    const value = Math.floor(this.mouse.y / this.size.y);
-    this.elms._.style.setProperty('--cursor-pos', value.toString());
+    this.cursor.x = Math.floor(this.mouse.x / this.size.x);
+    this.cursor.y = Math.floor(this.mouse.y / this.size.y);
+    this.elms._.style.setProperty('--cursor-pos', this.cursor.y.toString());
+  }
+  public click(event: MouseEvent) {
+    if (event.target === this.elms.keyboard) {
+      return;
+    }
+    const note = document.createElement('div');
+    note.style.setProperty('--pos-x', this.cursor.x.toString());
+    note.style.setProperty('--pos-y', this.cursor.y.toString());
+    this.elms.notes.appendChild(note);
   }
   private wheel(event: WheelEvent) {
     event.preventDefault();
@@ -88,8 +102,10 @@ export default class PianoRoll {
         page: '.pianoroll-page',
         keyboard: '.pianoroll-keyboard',
         rollViewport: '.pianoroll-roll-viewport',
+        rollPage: '.pianoroll-roll-page',
         rollKeys: '.pianoroll-roll-keys',
         rollTime: '.pianoroll-roll-time',
+        notes: '.pianoroll-notes',
         cursor: '.pianoroll-cursor',
       },
     );

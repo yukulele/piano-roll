@@ -4,24 +4,24 @@
   "description": "",
   "main": "piano-roll.js",
   "devDependencies": {
-    "browser-sync": "^2.24.5",
-    "common-tags": "^1.8.0",
-    "pug": "^2.0.3",
-    "pug-cli": "^1.0.0-alpha6",
-    "rollup-plugin-typescript": "^0.8.1",
-    "rollup-plugin-typescript2": "^0.15.0",
-    "tslint": "^5.12.1",
-    "typescript": "^2.9.2",
     "babel-core": "^6.26.3",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.7.0",
+    "browser-sync": "^2.26.3",
+    "common-tags": "^1.8.0",
+    "pug": "^2.0.3",
+    "pug-cli": "^1.0.0-alpha6",
     "rollup": "^0.61.1",
     "rollup-plugin-babel": "^3.0.4",
-    "stylus": "^0.54.5"
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-plugin-typescript2": "^0.15.0",
+    "stylus": "^0.54.5",
+    "tslint": "^5.12.1",
+    "typescript": "^2.9.2"
   },
   "scripts": {
     "build": "make",
-    "serve": "npx browser-sync start -c bs-config.js"
+    "serve": "browser-sync start -c bs-config.js"
   },
   "keywords": [],
   "author": "",

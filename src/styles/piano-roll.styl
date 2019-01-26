@@ -93,6 +93,7 @@
   position relative
 .pianoroll-roll-keys
 .pianoroll-roll-time
+  pointer-events none
   position absolute
   top 0
   left 0
@@ -125,10 +126,23 @@
   background-image:
     linear-gradient(to right, #0ff4, #0ff0 8px),
     repeating-linear-gradient(
-      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px)),
-    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)/var(--x-sub)*1px))
+      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*var(--x-sub)*1px)),
+    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px))
 
   background-position:
     left,
     left 0px bottom calc(var(--key-size) * 0),
     left 0px bottom calc(var(--key-size) * 0)
+
+.pianoroll-notes
+  position absolute
+  top 0
+  left 0
+  div
+    position absolute
+    top calc(var(--pos-y) * var(--key-size))
+    left calc(var(--pos-x) * var(--zoom-x)*1px)
+    width calc(var(--zoom-x)*1px)
+    height var(--key-size)
+    background-color orangered
+    border 1px solid black

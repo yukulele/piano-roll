@@ -1,18 +1,20 @@
 default: build
 
+BIN := ./node_modules/.bin
+
 STYLUS_SRC_FILE := $(wildcard src/styles/*.styl)
 
 STYLUS_DEST := $(STYLUS_SRC_FILE:src/%.styl=www/%.css)
 
 www/%.css: src/%.styl
 	@echo "stylus: $< ➜ $@"
-	npx stylus < $< > $@
+	$(BIN)/stylus < $< > $@
 
 src/scripts/pianoRollTemplate.js: src/scripts/pianoRollTemplate.pug
-	npx pug src/scripts/pianoRollTemplate.pug --client --no-debug -E js -n '_(){};export default (_)=>__(_);function __'
+	$(BIN)/pug src/scripts/pianoRollTemplate.pug --client --no-debug -E js -n '_(){};export default (_)=>__(_);function __'
 
 www/scripts/script.js: src/scripts/pianoRollTemplate.js $(wildcard src/scripts/*.ts)
-	npx rollup --config
+	$(BIN)/rollup --config
 
 clear:
 	rm -f \
@@ -28,4 +30,7 @@ watch:
 	@echo 'press ctrl+C to stop'
 	@while true; do ${MAKE} --silent ; sleep 0.5; done
 
-.PHONY: default clear watch build
+serve:
+	$(BIN)/browser-sync start -c bs-config.js
+
+.PHONY: default clear watch build serve
