@@ -16,6 +16,9 @@ src/scripts/pianoRollTemplate.js: src/scripts/pianoRollTemplate.pug
 www/scripts/script.js: src/scripts/pianoRollTemplate.js $(wildcard src/scripts/*.ts)
 	$(BIN)/rollup --config
 
+install:
+	npm install
+
 clear:
 	rm -f \
 		src/scripts/pianoRollTemplate.js \
@@ -33,4 +36,4 @@ watch:
 serve:
 	$(BIN)/browser-sync start -c bs-config.js
 
-.PHONY: default clear watch build serve
+.PHONY: default install clear build watch serve
