@@ -10,6 +10,8 @@ www/%.css: src/%.styl
 	@echo "stylus: $< ➜ $@"
 	$(BIN)/stylus < $< > $@
 
+src/scripts/pianoRollTemplate.html: src/scripts/pianoRollTemplate.pug
+	$(BIN)/pug src/scripts/pianoRollTemplate.pug
 src/scripts/pianoRollTemplate.js: src/scripts/pianoRollTemplate.pug
 	$(BIN)/pug src/scripts/pianoRollTemplate.pug --client --no-debug -E js -n '_(){};export default (_)=>__(_);function __'
 

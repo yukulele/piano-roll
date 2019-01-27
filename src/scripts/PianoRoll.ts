@@ -1,5 +1,5 @@
-import parseHtmlFragment from './parseHtmlFragment.js';
-import template from './pianoRollTemplate.js';
+import parseHtmlFragment from './parseHtmlFragment';
+import template from './pianoRollTemplate';
 
 type selection<T> = { [K in keyof T | '_']: HTMLElement };
 
@@ -11,6 +11,7 @@ export default class PianoRoll {
   private mouse = { x: 0, y: 0 };
   private cursor = { x: 0, y: 0 };
   private elms = this.selection();
+  private currentNote: HTMLDivElement | undefined = undefined;
   constructor() {
     this.resize();
     window.addEventListener('resize', () => this.resize());
@@ -19,12 +20,22 @@ export default class PianoRoll {
       this.wheel(event),
     );
     this.elms._.addEventListener('mousemove', event => this.mousemove(event));
-    this.elms._.addEventListener('click', event => this.click(event));
+    this.elms._.addEventListener('mousedown', event => this.mousedown(event));
+    this.elms._.addEventListener('mouseup', event => this.mouseup(event));
     this.setZoom('x', this.zoom.x);
     this.setZoom('y', this.zoom.y);
   }
   get element() {
     return this.elms._;
+  }
+  public updateCursor() {
+    this.cursor.x = Math.floor(this.mouse.x / this.size.x);
+    this.cursor.y = Math.floor(this.mouse.y / this.size.y);
+    this.elms._.style.setProperty('--cursor-pos', this.cursor.y.toString());
+    if (this.currentNote) {
+      this.currentNote.style.setProperty('--pos-x', this.cursor.x.toString());
+      this.currentNote.style.setProperty('--pos-y', this.cursor.y.toString());
+    }
   }
   public mousemove(event: MouseEvent) {
     const rect = this.elms.rollPage.getBoundingClientRect();
@@ -32,19 +43,22 @@ export default class PianoRoll {
     this.mouse.y = event.pageY - rect.top;
     this.updateCursor();
   }
-  public updateCursor() {
-    this.cursor.x = Math.floor(this.mouse.x / this.size.x);
-    this.cursor.y = Math.floor(this.mouse.y / this.size.y);
-    this.elms._.style.setProperty('--cursor-pos', this.cursor.y.toString());
-  }
-  public click(event: MouseEvent) {
+  public mousedown(event: MouseEvent) {
+    if (!(event.target instanceof HTMLDivElement)) {
+      return;
+    }
     if (event.target === this.elms.keyboard) {
       return;
     }
-    const note = document.createElement('div');
-    note.style.setProperty('--pos-x', this.cursor.x.toString());
-    note.style.setProperty('--pos-y', this.cursor.y.toString());
-    this.elms.notes.appendChild(note);
+    const note =
+      event.target !== this.elms.rollPage
+        ? event.target
+        : this.elms.notes.appendChild(document.createElement('div'));
+    this.currentNote = note;
+    this.mousemove(event);
+  }
+  public mouseup(event: MouseEvent) {
+    delete this.currentNote;
   }
   private wheel(event: WheelEvent) {
     event.preventDefault();
