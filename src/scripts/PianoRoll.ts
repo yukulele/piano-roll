@@ -16,17 +16,22 @@ export default class PianoRoll {
     this.resize();
     window.addEventListener('resize', () => this.resize());
 
-    this.elms.rollViewport.addEventListener('wheel', event =>
-      this.wheel(event),
-    );
-    this.elms._.addEventListener('mousemove', event => this.mousemove(event));
-    this.elms._.addEventListener('mousedown', event => this.mousedown(event));
-    this.elms._.addEventListener('mouseup', event => this.mouseup(event));
+    this.elms.rollViewport.addEventListener('wheel', ev => this.wheel(ev));
+    this.elms._.addEventListener('mousemove', ev => this.mousemove(ev));
+    this.elms._.addEventListener('mousedown', ev => this.mousedown(ev));
+    this.elms._.addEventListener('mouseup', ev => this.mouseup(ev));
+    this.elms._.addEventListener('contextmenu', ev => ev.preventDefault());
     this.setZoom('x', this.zoom.x);
     this.setZoom('y', this.zoom.y);
   }
   get element() {
     return this.elms._;
+  }
+  public setIsErasing(erasing = true) {
+    this.elms._.classList.toggle('is-erasing', erasing);
+  }
+  public getIsErasing() {
+    return this.elms._.classList.contains('is-erasing');
   }
   public updateCursor() {
     this.cursor.x = Math.floor(this.mouse.x / this.size.x);
@@ -41,10 +46,28 @@ export default class PianoRoll {
     const rect = this.elms.rollPage.getBoundingClientRect();
     this.mouse.x = event.pageX - rect.left;
     this.mouse.y = event.pageY - rect.top;
+    if (
+      this.getIsErasing() &&
+      event.target instanceof HTMLDivElement &&
+      event.target !== this.elms.keyboard &&
+      event.target !== this.elms.rollPage
+    ) {
+      event.target.remove();
+    }
     this.updateCursor();
   }
   public mousedown(event: MouseEvent) {
+    this.setIsErasing(false);
+    if (event.which === 2) {
+      return;
+    }
     if (!(event.target instanceof HTMLDivElement)) {
+      return;
+    }
+    if (event.which === 3) {
+      this.mouseup(event);
+      this.setIsErasing(true);
+      this.mousemove(event);
       return;
     }
     if (event.target === this.elms.keyboard) {
@@ -58,6 +81,7 @@ export default class PianoRoll {
     this.mousemove(event);
   }
   public mouseup(event: MouseEvent) {
+    this.setIsErasing(false);
     delete this.currentNote;
   }
   private wheel(event: WheelEvent) {
