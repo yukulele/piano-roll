@@ -36,6 +36,6 @@ watch:
 	@while true; do ${MAKE} --silent ; sleep 0.5; done
 
 serve:
-	$(BIN)/browser-sync start -c bs-config.js
+	$(BIN)/live-server
 
 .PHONY: default install clear build watch serve
