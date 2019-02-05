@@ -1,8 +1,6 @@
 import parseHtmlFragment from './parseHtmlFragment';
 import template from './pianoRollTemplate';
-
 type selection<T> = { [K in keyof T | '_']: HTMLElement };
-
 export default class PianoRoll {
   private zoomFactor = 1.2;
   private zoom = { x: 0, y: 0 };
@@ -11,11 +9,11 @@ export default class PianoRoll {
   private mouse = { x: 0, y: 0 };
   private cursor = { x: 0, y: 0 };
   private elms = this.selection();
+  private resizing: HTMLDivElement | undefined;
   private currentNote: HTMLDivElement | undefined = undefined;
   constructor() {
     this.resize();
     window.addEventListener('resize', () => this.resize());
-
     this.elms.rollViewport.addEventListener('wheel', ev => this.wheel(ev));
     this.elms._.addEventListener('mousemove', ev => this.mousemove(ev));
     this.elms._.addEventListener('mousedown', ev => this.mousedown(ev));
@@ -27,36 +25,41 @@ export default class PianoRoll {
   get element() {
     return this.elms._;
   }
-  public setIsErasing(erasing = true) {
+  private setIsErasing(erasing = true) {
     this.elms._.classList.toggle('is-erasing', erasing);
   }
-  public getIsErasing() {
+  private getIsErasing() {
     return this.elms._.classList.contains('is-erasing');
   }
-  public updateCursor() {
-    this.cursor.x = Math.floor(this.mouse.x / this.size.x);
+  private updateCursor(floor = true) {
+    const x = this.mouse.x / this.size.x;
+    this.cursor.x = floor ? Math.floor(x) : x;
     this.cursor.y = Math.floor(this.mouse.y / this.size.y);
     this.elms._.style.setProperty('--cursor-pos', this.cursor.y.toString());
+    if (this.resizing) {
+      const posX = Math.max(
+        floor ? 1 : 0,
+        this.cursor.x - +this.resizing.style.getPropertyValue('--pos-x'),
+      );
+
+      this.resizing.style.setProperty('--width', posX.toString());
+    }
     if (this.currentNote) {
       this.currentNote.style.setProperty('--pos-x', this.cursor.x.toString());
       this.currentNote.style.setProperty('--pos-y', this.cursor.y.toString());
     }
   }
-  public mousemove(event: MouseEvent) {
+  private mousemove(event: MouseEvent) {
     const rect = this.elms.rollPage.getBoundingClientRect();
     this.mouse.x = event.pageX - rect.left;
     this.mouse.y = event.pageY - rect.top;
-    if (
-      this.getIsErasing() &&
-      event.target instanceof HTMLDivElement &&
-      event.target !== this.elms.keyboard &&
-      event.target !== this.elms.rollPage
-    ) {
-      event.target.remove();
+    if (this.getIsErasing() && event.target instanceof HTMLDivElement) {
+      const target = event.target.closest('.pianoroll-notes>div');
+      if (target) target.remove();
     }
-    this.updateCursor();
+    this.updateCursor(!event.ctrlKey);
   }
-  public mousedown(event: MouseEvent) {
+  private mousedown(event: MouseEvent) {
     this.setIsErasing(false);
     if (event.which === 2) {
       return;
@@ -73,27 +76,44 @@ export default class PianoRoll {
     if (event.target === this.elms.keyboard) {
       return;
     }
-    const note =
-      event.target !== this.elms.rollPage
-        ? event.target
-        : this.elms.notes.appendChild(document.createElement('div'));
+    let note: HTMLDivElement;
+    if (event.target !== this.elms.rollPage) {
+      note = event.target;
+    } else {
+      note = document.createElement('div');
+      const resizer = document.createElement('div');
+      resizer.classList.add('resizer');
+      note.appendChild(resizer);
+      this.elms.notes.appendChild(note);
+    }
+    if (note.classList.contains('resizer')) {
+      this.resizing = note.parentElement as HTMLDivElement;
+    }
+    if (this.currentNote) this.currentNote.classList.remove('selected');
     this.currentNote = note;
+    this.currentNote.classList.add('selected');
+    this.elms._.classList.add(this.resizing ? 'is-resizing' : 'is-moving');
     this.mousemove(event);
   }
-  public mouseup(event: MouseEvent) {
+  private mouseup(event: MouseEvent) {
     this.setIsErasing(false);
+    delete this.resizing;
+
+    if (!this.currentNote) return;
+    this.currentNote.classList.remove('selected');
     delete this.currentNote;
+    this.elms._.classList.remove('is-moving', 'is-resizing');
   }
   private wheel(event: WheelEvent) {
     event.preventDefault();
-    let axe: 'x' | 'y' | undefined;
-    if (event.ctrlKey) {
-      axe = 'x';
-    } else if (event.altKey) {
-      axe = 'y';
-    }
-    if (axe) {
-      this.setZoom(axe, this.getZoom(axe) + Math.sign(event.deltaY));
+    if (event.ctrlKey || event.altKey) {
+      const oldCursor = Object.assign({}, this.cursor);
+      if (event.ctrlKey) {
+        this.setZoom('x', this.getZoom('x') + Math.sign(event.deltaY));
+      }
+      if (event.altKey) {
+        this.setZoom('y', this.getZoom('y') + Math.sign(event.deltaY));
+      }
       return;
     }
     this.scroll(event.deltaY * 10, event.shiftKey ? 'y' : 'x');

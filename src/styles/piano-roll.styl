@@ -94,6 +94,11 @@
   position relative
   .is-erasing &
     cursor no-drop
+  .is-moving &
+    cursor grabbing
+  .is-resizing &
+    cursor: ew-resize
+
 .pianoroll-roll-keys
 .pianoroll-roll-time
   pointer-events none
@@ -141,11 +146,27 @@
   position absolute
   top 0
   left 0
-  div
+  >div
     position absolute
+    --width 1
     top calc(var(--pos-y) * var(--key-size))
-    left calc(var(--pos-x) * var(--zoom-x)*1px)
-    width calc(var(--zoom-x)*1px)
+    left calc(var(--pos-x) * var(--zoom-x) * 1px)
+    width calc(var(--zoom-x) * var(--width) * 1px)
     height var(--key-size)
     background-color orangered
     border 1px solid black
+    cursor grab
+    &.selected
+      background-color #f
+      cursor grabbing
+    .is-resizing &
+      cursor: ew-resize
+    >.resizer
+      position absolute
+      top 0
+      right 0
+      bottom 0
+      width 50%
+      max-width 5px
+      background-color red
+      cursor ew-resize
