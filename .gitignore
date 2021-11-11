@@ -1,7 +1,7 @@
-/node_modules
+/node_modules/
 /src/scripts/pianoRollTemplate.js
 /src/scripts/pianoRollTemplate.html
 /www/scripts/*
 /www/styles/*
-/.rpt2_cache
-!.gitkeep
+/public/
+!/www/**/.gitkeep

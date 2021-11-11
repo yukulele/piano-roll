@@ -1,0 +1,12 @@
+---
+image: node
+
+pages:
+  stage: deploy
+  script:
+    - make public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
