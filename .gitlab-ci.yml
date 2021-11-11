@@ -2,7 +2,7 @@
 image: node
 
 pages:
-  cache: &global_cache
+  cache:
     key: $CI_COMMIT_REF_SLUG
     paths:
       - ./.npm/

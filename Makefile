@@ -15,7 +15,7 @@ src/scripts/pianoRollTemplate.html: src/scripts/pianoRollTemplate.pug
 src/scripts/pianoRollTemplate.js: src/scripts/pianoRollTemplate.pug
 	@node ./pug.js src/scripts/pianoRollTemplate.pug --client --no-debug -E js -n '_(){};export default (_)=>__(_);function __'
 
-public/scripts/script.js: src/scripts/pianoRollTemplate.js $(wildcard src/scripts/*.ts)
+public/scripts/script.js: rollup.config.js tsconfig.json src/scripts/pianoRollTemplate.js $(wildcard src/scripts/*.ts)
 	@$(BIN)/rollup --config
 
 install: node_modules/

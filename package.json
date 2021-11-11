@@ -14,8 +14,8 @@
     "http-server": "^14.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
     "@rollup/plugin-typescript": "^8.3.0",
-    "babel-core": "^6.26.3",
     "pug": "^3.0.2",
     "rollup": "^2.59.0",
     "stylus": "^0.55.0",
