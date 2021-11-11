@@ -4,3 +4,5 @@ const pianoRoll = new PianoRoll();
 window.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(pianoRoll.element);
 });
+
+export default pianoRoll;
