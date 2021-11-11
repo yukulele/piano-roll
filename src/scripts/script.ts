@@ -1,8 +1,8 @@
-import PianoRoll from './PianoRoll';
+import PianoRoll from './PianoRoll'
 
-const pianoRoll = new PianoRoll();
+const pianoRoll = new PianoRoll()
 window.addEventListener('DOMContentLoaded', () => {
-  document.body.appendChild(pianoRoll.element);
-});
+  document.body.appendChild(pianoRoll.element)
+})
 
-export default pianoRoll;
+export default pianoRoll
