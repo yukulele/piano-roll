@@ -11,7 +11,7 @@ pages:
     policy: pull-push
   stage: deploy
   script:
-    - make public
+    - make
   artifacts:
     paths:
       - public
