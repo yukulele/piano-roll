@@ -5,12 +5,11 @@ pages:
   cache: &global_cache
     key: $CI_COMMIT_REF_SLUG
     paths:
-      - node_modules/
-      - public/
-      - vendor/
+      - ./.npm/
     policy: pull-push
   stage: deploy
   script:
+    - npm ci --cache ./.npm/ --prefer-offline
     - make
   artifacts:
     paths:
