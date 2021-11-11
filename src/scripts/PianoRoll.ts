@@ -1,6 +1,5 @@
 import parseHtmlFragment from './parseHtmlFragment'
 import template from './pianoRollTemplate'
-type selection<T> = { [K in keyof T | '_']: HTMLElement }
 export default class PianoRoll {
   private zoomFactor = 1.2
   private zoom = { x: 0, y: 0 }
@@ -10,7 +9,7 @@ export default class PianoRoll {
   private cursor = { x: 0, y: 0 }
   private elms = this.selection()
   private resizing: HTMLDivElement | undefined
-  private currentNote: HTMLDivElement | undefined = undefined
+  private currentNote: HTMLDivElement | undefined
   constructor() {
     this.resize()
     window.addEventListener('resize', () => this.resize())
@@ -168,14 +167,20 @@ export default class PianoRoll {
       },
     )
   }
-  private selectAll<A>(_: HTMLElement, query: A): selection<A> {
-    const ret = { _ } as selection<A>
+  private selectAll<A extends { [key: string]: string }>(
+    _: HTMLElement,
+    query: A,
+  ) {
+    const ret = { _ } as { [K in keyof A | '_']: HTMLElement }
     for (const key in query) {
-      const v = query[key]
-      if (typeof v !== 'string') {
+      const selector = query[key]
+      if (typeof selector !== 'string') {
         continue
       }
-      ret[key] = _.querySelector(v) as HTMLElement
+      const elm = _.querySelector(selector)
+      if (!(elm instanceof HTMLElement))
+        throw `${key} (${selector}) is not an element`
+      ret[key] = elm
     }
     return ret
   }
