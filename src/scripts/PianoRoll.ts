@@ -7,10 +7,10 @@ export default class PianoRoll {
   private size = { x: 0, y: 0 }
   private mouse = { x: 0, y: 0 }
   private cursor = { x: 0, y: 0 }
-  private elms = this.selection()
   private moveOffset = 0
-  private resizing: HTMLDivElement | undefined
   private savedNoteSize = 1
+  private elms = this.selection()
+  private resizing: HTMLDivElement | undefined
   private currentNote: HTMLDivElement | undefined
   constructor() {
     this.resize()
@@ -163,7 +163,7 @@ export default class PianoRoll {
   }
   private selection() {
     return this.selectAll(
-      parseHtmlFragment(template()).firstChild as HTMLElement,
+      parseHtmlFragment(template).firstChild as HTMLElement,
       {
         viewport: '.pianoroll-viewport',
         page: '.pianoroll-page',

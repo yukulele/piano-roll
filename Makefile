@@ -12,10 +12,10 @@ public/%.css: src/%.styl
 
 src/scripts/pianoRollTemplate.html: src/scripts/pianoRollTemplate.pug
 	@node ./pug.js src/scripts/pianoRollTemplate.pug
-src/scripts/pianoRollTemplate.js: src/scripts/pianoRollTemplate.pug
-	@node ./pug.js src/scripts/pianoRollTemplate.pug --client --no-debug -E js -n '_(){};export default (_)=>__(_);function __'
+src/scripts/pianoRollTemplate.ts: src/scripts/pianoRollTemplate.pug
+	@node ./pug.js src/scripts/pianoRollTemplate.pug --client -E ts
 
-public/scripts/script.js: rollup.config.js tsconfig.json src/scripts/pianoRollTemplate.js $(wildcard src/scripts/*.ts)
+public/scripts/script.js: rollup.config.js tsconfig.json src/scripts/pianoRollTemplate.ts $(wildcard src/scripts/*.ts)
 	@$(BIN)/rollup --config
 
 install: node_modules/
@@ -25,7 +25,7 @@ node_modules/:
 
 clear:
 	@rm -fv \
-		src/scripts/pianoRollTemplate.js \
+		src/scripts/pianoRollTemplate.ts \
 		public/scripts/script.js \
 		public/scripts/script.js.map \
 		$(STYLUS_DEST)

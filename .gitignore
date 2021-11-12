@@ -1,5 +1,6 @@
 /node_modules/
 /src/scripts/pianoRollTemplate.js
+/src/scripts/pianoRollTemplate.ts
 /src/scripts/pianoRollTemplate.html
 /public/scripts/*
 /public/styles/*
