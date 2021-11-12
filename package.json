@@ -8,6 +8,7 @@
   "main": "piano-roll.js",
   "scripts": {
     "build": "make",
+    "watch": "make watch",
     "serve": "make serve"
   },
   "dependencies": {

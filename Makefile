@@ -34,10 +34,15 @@ build: node_modules/ public/scripts/script.js $(STYLUS_DEST)
 
 rebuild: clear build
 
-watch:
+watch-strict:
 	@echo 'watching for change'
 	@echo 'press ctrl+C to stop'
-	@while true; do ${MAKE} --silent ; sleep 0.5; done
+	while true; do ${MAKE} --silent ; sleep 0.5; done
+
+watch: node_modules/
+	@node ./pug.js src/scripts/pianoRollTemplate.pug --client -E ts -w \
+	& $(BIN)/rollup --config -w --no-watch.clearScreen \
+	& $(BIN)/stylus src/styles/ --out public/styles/ -w \
 
 serve:
 	@$(BIN)/http-server -o -c-1
