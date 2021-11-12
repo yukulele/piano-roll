@@ -8,7 +8,9 @@ export default class PianoRoll {
   private mouse = { x: 0, y: 0 }
   private cursor = { x: 0, y: 0 }
   private elms = this.selection()
+  private moveOffset = 0
   private resizing: HTMLDivElement | undefined
+  private savedNoteSize = 1
   private currentNote: HTMLDivElement | undefined
   constructor() {
     this.resize()
@@ -16,7 +18,7 @@ export default class PianoRoll {
     this.elms.rollViewport.addEventListener('wheel', (ev) => this.wheel(ev))
     this.elms._.addEventListener('mousemove', (ev) => this.mousemove(ev))
     this.elms._.addEventListener('mousedown', (ev) => this.mousedown(ev))
-    this.elms._.addEventListener('mouseup', (ev) => this.mouseup(ev))
+    window.addEventListener('mouseup', (ev) => this.mouseup(ev))
     this.elms._.addEventListener('contextmenu', (ev) => ev.preventDefault())
     this.setZoom('x', this.zoom.x)
     this.setZoom('y', this.zoom.y)
@@ -30,22 +32,27 @@ export default class PianoRoll {
   private getIsErasing() {
     return this.elms._.classList.contains('is-erasing')
   }
-  private updateCursor(floor = true) {
-    const x = this.mouse.x / this.size.x
-    this.cursor.x = floor ? Math.floor(x) : x
+  private updateCursor(roundedWidth = true) {
+    const x = (this.mouse.x - this.moveOffset) / this.size.x
+    this.cursor.x = roundedWidth
+      ? Math[this.resizing ? 'round' : 'floor'](x)
+      : x
     this.cursor.y = Math.floor(this.mouse.y / this.size.y)
     this.elms._.style.setProperty('--cursor-pos', this.cursor.y.toString())
     if (this.resizing) {
       const posX = Math.max(
-        floor ? 1 : 0,
+        roundedWidth ? 1 : 0,
         this.cursor.x - +this.resizing.style.getPropertyValue('--pos-x'),
       )
 
       this.resizing.style.setProperty('--width', posX.toString())
+      this.savedNoteSize = posX
     }
     if (this.currentNote) {
-      this.currentNote.style.setProperty('--pos-x', this.cursor.x.toString())
-      this.currentNote.style.setProperty('--pos-y', this.cursor.y.toString())
+      const x = Math.max(0, this.cursor.x)
+      const y = this.cursor.y
+      this.currentNote.style.setProperty('--pos-x', x.toString())
+      this.currentNote.style.setProperty('--pos-y', y.toString())
     }
   }
   private mousemove(event: MouseEvent) {
@@ -60,13 +67,13 @@ export default class PianoRoll {
   }
   private mousedown(event: MouseEvent) {
     this.setIsErasing(false)
-    if (event.which === 2) {
+    if (event.button === 1 /* middle click */) {
       return
     }
     if (!(event.target instanceof HTMLDivElement)) {
       return
     }
-    if (event.which === 3) {
+    if (event.button === 2 /* right click */) {
       this.mouseup(event)
       this.setIsErasing(true)
       this.mousemove(event)
@@ -80,19 +87,21 @@ export default class PianoRoll {
       note = event.target
     } else {
       note = document.createElement('div')
-      const resizer = document.createElement('div')
-      resizer.classList.add('resizer')
-      note.appendChild(resizer)
+      note.style.setProperty('--width', this.savedNoteSize.toString())
+      const resizeHandle = document.createElement('div')
+      resizeHandle.classList.add('resize-handle')
+      note.appendChild(resizeHandle)
       this.elms.notes.appendChild(note)
     }
-    if (note.classList.contains('resizer')) {
+    if (note.classList.contains('resize-handle')) {
       this.resizing = note.parentElement as HTMLDivElement
     }
     if (this.currentNote) this.currentNote.classList.remove('selected')
     this.currentNote = note
     this.currentNote.classList.add('selected')
     this.elms._.classList.add(this.resizing ? 'is-resizing' : 'is-moving')
-    this.mousemove(event)
+    if (note !== event.target) this.mousemove(event)
+    this.moveOffset = event.clientX - note.getBoundingClientRect().left
   }
   private mouseup(event: MouseEvent) {
     this.setIsErasing(false)
@@ -101,6 +110,7 @@ export default class PianoRoll {
     if (!this.currentNote) return
     this.currentNote.classList.remove('selected')
     delete this.currentNote
+    this.moveOffset = 0
     this.elms._.classList.remove('is-moving', 'is-resizing')
   }
   private wheel(event: WheelEvent) {
@@ -115,7 +125,7 @@ export default class PianoRoll {
       }
       return
     }
-    this.scroll(event.deltaY * 10, event.shiftKey ? 'y' : 'x')
+    this.scroll(Math.sign(event.deltaY) * 30, event.shiftKey ? 'y' : 'x')
     this.mousemove(event)
   }
   private getZoom(axe: 'x' | 'y') {
