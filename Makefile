@@ -40,6 +40,6 @@ watch:
 	@while true; do ${MAKE} --silent ; sleep 0.5; done
 
 serve:
-	@$(BIN)/http-server -o
+	@$(BIN)/http-server -o -c-1
 
 .PHONY: default install clear build watch serve
