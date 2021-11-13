@@ -1,11 +1,12 @@
 {
-  "files": ["src/scripts/script.ts"],
-
   "compilerOptions": {
     "outDir": "public/scripts",
     "target": "es6",
     "module": "esnext",
     "lib": ["dom", "esnext"],
-    "strict": true
-  }
+    "strict": true,
+    "isolatedModules": true
+  },
+  "files": ["src/scripts/script.ts"],
+  "include": ["src/scripts/**/*"]
 }

@@ -1,3 +1,10 @@
+type SheetNote = {
+  pitch: number
+  time: number
+  length: number
+}
+type Sheet = SheetNote[]
+
 import parseHtmlFragment from './parseHtmlFragment'
 import template from './pianoRollTemplate'
 export default class PianoRoll {
@@ -12,16 +19,90 @@ export default class PianoRoll {
   private elms = this.selection()
   private resizing: HTMLDivElement | undefined
   private currentNote: HTMLDivElement | undefined
+  private delegate = new EventTarget()
   constructor() {
     this.resize()
     window.addEventListener('resize', () => this.resize())
     this.elms.rollViewport.addEventListener('wheel', (ev) => this.wheel(ev))
-    this.elms._.addEventListener('mousemove', (ev) => this.mousemove(ev))
+    window.addEventListener('mousemove', (ev) => this.mousemove(ev))
     this.elms._.addEventListener('mousedown', (ev) => this.mousedown(ev))
     window.addEventListener('mouseup', (ev) => this.mouseup(ev))
     this.elms._.addEventListener('contextmenu', (ev) => ev.preventDefault())
     this.setZoom('x', this.zoom.x)
     this.setZoom('y', this.zoom.y)
+  }
+
+  centerScroll() {
+    const vp = this.elms.viewport
+    console.log(vp.scrollHeight)
+    vp.scrollTop = vp.scrollHeight / 2 - vp.clientHeight / 2
+    this.initNoteEvents()
+  }
+
+  private initNoteEvents() {
+    let down = false
+    this.elms._.addEventListener('mousedown', (e) => {
+      if (e.target === this.elms.keyboard) down = true
+
+      if (this.currentNote || down) this.noteOn(126 - this.cursor.y)
+    })
+    window.addEventListener('mouseup', () => {
+      this.noteOff()
+      down = false
+    })
+    window.addEventListener('mousemove', () => {
+      const y =
+        this.currentNote?.style?.getPropertyValue('--pos-y') || this.cursor.y
+      if (this.currentNote || down) this.noteOn(126 - +y)
+    })
+  }
+
+  setSheet(sheet: Sheet) {
+    for (const note of sheet) {
+      this.addNote(note.pitch, note.time, note.length)
+    }
+  }
+
+  getSheet(): Sheet {
+    const notes = Array.from(this.elms.notes.children).filter(
+      (elm): elm is HTMLDivElement => elm instanceof HTMLDivElement,
+    )
+    return notes.map((note) => ({
+      pitch: 126 - +note.style.getPropertyValue('--pos-y'),
+      time: +note.style.getPropertyValue('--pos-x'),
+      length: +note.style.getPropertyValue('--width'),
+    }))
+  }
+  addEventListener(
+    type: 'note' | 'noteOff',
+    callback: (ev: CustomEvent<number>) => void,
+  ): void {
+    this.delegate.addEventListener.call(
+      this.delegate,
+      type,
+      callback as EventListener,
+    )
+  }
+
+  dispatchEvent(ev: CustomEvent<number>): boolean {
+    return this.delegate.dispatchEvent.call(this.delegate, ev)
+  }
+
+  removeEventListener(
+    type: 'note' | 'noteOff',
+    callback: (ev: CustomEvent<number>) => void,
+  ): void {
+    return this.delegate.removeEventListener.call(
+      this.delegate,
+      type,
+      callback as EventListener,
+    )
+  }
+  private noteOn(pitch: number) {
+    this.dispatchEvent(new CustomEvent('note', { detail: pitch }))
+  }
+  private noteOff() {
+    this.dispatchEvent(new CustomEvent('noteOff'))
   }
   get element() {
     return this.elms._
@@ -33,10 +114,12 @@ export default class PianoRoll {
     return this.elms._.classList.contains('is-erasing')
   }
   private updateCursor(roundedWidth = true) {
-    const x = (this.mouse.x - this.moveOffset) / this.size.x
-    this.cursor.x = roundedWidth
-      ? Math[this.resizing ? 'round' : 'floor'](x)
-      : x
+    const x =
+      (this.mouse.x - (this.resizing ? 0 : this.moveOffset)) / this.size.x
+    const firstTime =
+      this.currentNote?.getAttribute('style')?.match('--pos-') == null
+
+    this.cursor.x = roundedWidth ? Math[firstTime ? 'floor' : 'round'](x) : x
     this.cursor.y = Math.floor(this.mouse.y / this.size.y)
     this.elms._.style.setProperty('--cursor-pos', this.cursor.y.toString())
     if (this.resizing) {
@@ -47,8 +130,7 @@ export default class PianoRoll {
 
       this.resizing.style.setProperty('--width', posX.toString())
       this.savedNoteSize = posX
-    }
-    if (this.currentNote) {
+    } else if (this.currentNote) {
       const x = Math.max(0, this.cursor.x)
       const y = this.cursor.y
       this.currentNote.style.setProperty('--pos-x', x.toString())
@@ -79,30 +161,40 @@ export default class PianoRoll {
       this.mousemove(event)
       return
     }
-    if (event.target === this.elms.keyboard) {
-      return
-    }
+    if (!this.elms.rollPage.contains(event.target)) return
     let note: HTMLDivElement
     if (event.target !== this.elms.rollPage) {
       note = event.target
     } else {
-      note = document.createElement('div')
-      note.style.setProperty('--width', this.savedNoteSize.toString())
-      const resizeHandle = document.createElement('div')
-      resizeHandle.classList.add('resize-handle')
-      note.appendChild(resizeHandle)
-      this.elms.notes.appendChild(note)
+      note = this.addNote()
     }
     if (note.classList.contains('resize-handle')) {
-      this.resizing = note.parentElement as HTMLDivElement
+      note = note.parentElement as HTMLDivElement
+      this.resizing = note
     }
     if (this.currentNote) this.currentNote.classList.remove('selected')
     this.currentNote = note
     this.currentNote.classList.add('selected')
     this.elms._.classList.add(this.resizing ? 'is-resizing' : 'is-moving')
-    if (note !== event.target) this.mousemove(event)
+    if (note === event.target)
+      this.moveOffset = event.clientX - note.getBoundingClientRect().left
+    this.mousemove(event)
     this.moveOffset = event.clientX - note.getBoundingClientRect().left
   }
+  private addNote(pitch?: number, time?: number, length?: number) {
+    const note = document.createElement('div')
+    note.style.setProperty('--width', this.savedNoteSize.toString())
+    const resizeHandle = document.createElement('div')
+    resizeHandle.classList.add('resize-handle')
+    note.appendChild(resizeHandle)
+    this.elms.notes.appendChild(note)
+    if (pitch != null)
+      note.style.setProperty('--pos-y', (126 - pitch).toString())
+    if (time != null) note.style.setProperty('--pos-x', time.toString())
+    if (length != null) note.style.setProperty('--width', length.toString())
+    return note
+  }
+
   private mouseup(event: MouseEvent) {
     this.setIsErasing(false)
     delete this.resizing
@@ -158,7 +250,7 @@ export default class PianoRoll {
   private resize() {
     this.elms._.style.setProperty(
       '--line-width',
-      1 / window.devicePixelRatio + 'px',
+      Math.max(1, 1 / window.devicePixelRatio) + 'px',
     )
   }
   private selection() {
