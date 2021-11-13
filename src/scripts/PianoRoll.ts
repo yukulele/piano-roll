@@ -57,7 +57,22 @@ export default class PianoRoll {
     })
   }
 
+  addNote(pitch?: number, time?: number, length?: number) {
+    const note = document.createElement('div')
+    note.style.setProperty('--width', this.savedNoteSize.toString())
+    const resizeHandle = document.createElement('div')
+    resizeHandle.classList.add('resize-handle')
+    note.appendChild(resizeHandle)
+    this.elms.notes.appendChild(note)
+    if (pitch != null)
+      note.style.setProperty('--pos-y', (126 - pitch).toString())
+    if (time != null) note.style.setProperty('--pos-x', time.toString())
+    if (length != null) note.style.setProperty('--width', length.toString())
+    return note
+  }
+
   setSheet(sheet: Sheet) {
+    this.resetSheet()
     for (const note of sheet) {
       this.addNote(note.pitch, note.time, note.length)
     }
@@ -73,6 +88,11 @@ export default class PianoRoll {
       length: +note.style.getPropertyValue('--width'),
     }))
   }
+
+  resetSheet() {
+    this.elms.notes.replaceChildren()
+  }
+
   addEventListener(
     type: 'note' | 'noteOff',
     callback: (ev: CustomEvent<number>) => void,
@@ -180,19 +200,6 @@ export default class PianoRoll {
       this.moveOffset = event.clientX - note.getBoundingClientRect().left
     this.mousemove(event)
     this.moveOffset = event.clientX - note.getBoundingClientRect().left
-  }
-  private addNote(pitch?: number, time?: number, length?: number) {
-    const note = document.createElement('div')
-    note.style.setProperty('--width', this.savedNoteSize.toString())
-    const resizeHandle = document.createElement('div')
-    resizeHandle.classList.add('resize-handle')
-    note.appendChild(resizeHandle)
-    this.elms.notes.appendChild(note)
-    if (pitch != null)
-      note.style.setProperty('--pos-y', (126 - pitch).toString())
-    if (time != null) note.style.setProperty('--pos-x', time.toString())
-    if (length != null) note.style.setProperty('--width', length.toString())
-    return note
   }
 
   private mouseup(event: MouseEvent) {

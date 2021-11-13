@@ -5,7 +5,7 @@ export default {
   output: {
     file: 'public/scripts/script.js',
     format: 'iife',
-    name: 'pianoRoll',
+    name: '_',
     sourcemap: 'sourceMap',
   },
   plugins: [typescript({ typescript: require('typescript') })],
