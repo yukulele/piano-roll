@@ -32,5 +32,5 @@ async function build(filename, outFile, options) {
     outSource = `export default ${JSON.stringify(outSource)}`
   }
   fs.writeFile(outFile, outSource)
-  console.log(`\x1b[32m\x1b[1m${filename}\x1b[10m → \x1b[1m${outFile}\x1b[0m`)
+  console.info(`\x1b[32m\x1b[1m${filename}\x1b[10m → \x1b[1m${outFile}\x1b[0m`)
 }

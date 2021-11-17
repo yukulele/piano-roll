@@ -3,11 +3,13 @@ import PianoRoll from './PianoRoll'
 
 const ac = new AudioContext()
 
+new OscillatorNode(ac)
+
 export const pianoRoll = new PianoRoll()
 export const instrument = new Instrument(ac)
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.body.appendChild(pianoRoll.element)
+  document.querySelector('main')!.appendChild(pianoRoll.element)
   pianoRoll.centerScroll()
 })
 

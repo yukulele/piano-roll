@@ -34,7 +34,6 @@ export default class PianoRoll {
 
   centerScroll() {
     const vp = this.elms.viewport
-    console.log(vp.scrollHeight)
     vp.scrollTop = vp.scrollHeight / 2 - vp.clientHeight / 2
     this.initNoteEvents()
   }

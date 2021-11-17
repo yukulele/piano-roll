@@ -14,7 +14,7 @@ export default class Instrument {
     gain.gain.value = 0.2
     const osc = this.ac.createOscillator()
     osc.frequency.value = freq
-    osc.type = 'square'
+    osc.type = 'sawtooth'
     const obj = { pitch, time, osc, gain }
     gain.connect(this.ac.destination)
     osc.connect(gain)
