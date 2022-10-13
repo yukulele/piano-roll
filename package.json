@@ -6,6 +6,7 @@
   "author": "",
   "license": "ISC",
   "main": "piano-roll.js",
+  "type": "module",
   "scripts": {
     "build": "make",
     "watch": "make watch",
@@ -13,15 +14,15 @@
     "dev": "make dev"
   },
   "dependencies": {
-    "http-server": "^14.0.0"
+    "http-server": "^14.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@rollup/plugin-typescript": "^8.3.0",
-    "commander": "^8.3.0",
+    "@babel/core": "^7.19.3",
+    "@rollup/plugin-typescript": "^9.0.1",
+    "commander": "^9.4.1",
     "pug": "^3.0.2",
-    "rollup": "^2.59.0",
-    "stylus": "^0.55.0",
-    "typescript": "^4.4.4"
+    "rollup": "^3.1.0",
+    "stylus": "^0.59.0",
+    "typescript": "^4.8.4"
   }
 }

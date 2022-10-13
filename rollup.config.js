@@ -8,5 +8,5 @@ export default {
     name: '_',
     sourcemap: 'sourceMap',
   },
-  plugins: [typescript({ typescript: require('typescript') })],
+  plugins: [typescript()],
 }
