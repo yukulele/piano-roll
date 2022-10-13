@@ -1,6 +1,6 @@
-.pianoroll
-.pianoroll *
-.pianoroll *:before
+.pianoroll,
+.pianoroll *,
+.pianoroll *:before,
 .pianoroll *:after
   box-sizing border-box
 
@@ -36,46 +36,48 @@
   height var(--keyboard-height)
 
 .pianoroll-cursor
-  background-color #c4c6
+  background-color white
   pointer-events none
   position absolute
   top calc(var(--cursor-pos) * var(--key-size))
   left 0
   right 0
   height var(--key-size)
+  mix-blend-mode soft-light
+  box-shadow 0 0 0px var(--line-width) blue
 
 .pianoroll-keyboard
-  background-color #ccc
-  --white1-bg:  repeating-linear-gradient(to top, black, black var(--line-width), transparent 0, transparent var(--octave-size))
-  --white-bg:  repeating-linear-gradient(to top, grey, grey var(--line-width), transparent 0, transparent var(--octave-size))
-  --black-bg: repeating-linear-gradient(to top, black 0, black var(--key-size), transparent 0, transparent var(--octave-size))
+  background-color #bbb
+  --octaves-split repeating-linear-gradient(to top, black, black var(--line-width), transparent 0, transparent var(--octave-size))
+  --white-keys-split repeating-linear-gradient(to top, grey, grey var(--line-width), transparent 0, transparent var(--octave-size))
+  --black-keys-bg repeating-linear-gradient(to top, black 0, black var(--key-size), transparent 0, transparent var(--octave-size))
   background-image:
-    var(--white1-bg),
-      var(--black-bg),
-    var(--white-bg),
-      var(--black-bg),
-    var(--white-bg),
-    var(--white-bg),
-      var(--black-bg),
-    var(--white-bg),
-      var(--black-bg),
-    var(--white-bg),
-      var(--black-bg),
-    var(--white-bg)
-  background-repeat: no-repeat
+    var(--octaves-split),
+    var(--black-keys-bg),
+    var(--white-keys-split),
+    var(--black-keys-bg),
+    var(--white-keys-split),
+    var(--white-keys-split),
+    var(--black-keys-bg),
+    var(--white-keys-split),
+    var(--black-keys-bg),
+    var(--white-keys-split),
+    var(--black-keys-bg),
+    var(--white-keys-split)
+  background-repeat no-repeat
   background-position:
-    right  0px bottom calc(var(--key-size) * 0),
+    right 0px bottom calc(var(--key-size) * 0),
     right 20px bottom calc(var(--key-size) * 1),
-    right  0px bottom calc(var(--key-size) * 5 / 3),
+    right 0px bottom calc((var(--key-size) * 5 / 3)),
     right 20px bottom calc(var(--key-size) * 3),
-    right  0px bottom calc(var(--key-size) * 5 / 3 * 2),
-    right  0px bottom calc(var(--key-size) * 5),
+    right 0px bottom calc(var(--key-size) * 5 / 3 * 2),
+    right 0px bottom calc(var(--key-size) * 5),
     right 20px bottom calc(var(--key-size) * 6),
-    right  0px bottom calc(var(--key-size) * (5+7/4)),
+    right 0px bottom calc(var(--key-size) * (5 + 7 / 4)),
     right 20px bottom calc(var(--key-size) * 8),
-    right  0px bottom calc(var(--key-size) * (5+7/4*2)),
+    right 0px bottom calc(var(--key-size) * (5 + 7 / 4 * 2)),
     right 20px bottom calc(var(--key-size) * 10),
-    right  0px bottom calc(var(--key-size) * (5+7/4*3))
+    right 0px bottom calc(var(--key-size) * (5 + 7 / 4 * 3))
   border-right var(--line-width) solid black
   height var(--keyboard-height)
   width 60px
@@ -95,14 +97,17 @@
   width 300%
   height var(--keyboard-height)
   position relative
+
   .is-erasing &
     cursor no-drop
+
   .is-moving &
     cursor grabbing
-  .is-resizing &
-    cursor: ew-resize
 
-.pianoroll-roll-keys
+  .is-resizing &
+    cursor ew-resize
+
+.pianoroll-roll-keys,
 .pianoroll-roll-time
   pointer-events none
   position absolute
@@ -110,11 +115,12 @@
   left 0
   right 0
   bottom 0
-  background-repeat: no-repeat
+  background-repeat no-repeat
+
 .pianoroll-roll-keys
-  --bg: repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
-  --sep: repeating-linear-gradient(to top, #444, #444 var(--line-width), transparent 0, transparent var(--octave-size))
-  --sep-dark: repeating-linear-gradient(to top, #000, #000 var(--line-width), transparent 0, transparent var(--octave-size))
+  --bg repeating-linear-gradient(to top, #444 0, #444 var(--key-size), transparent 0, transparent var(--octave-size))
+  --sep repeating-linear-gradient(to top, #444, #444 var(--line-width), transparent 0, transparent var(--octave-size))
+  --sep-dark repeating-linear-gradient(to top, #000, #000 var(--line-width), transparent 0, transparent var(--octave-size))
   background-color #666
   background-image:
     var(--sep-dark),
@@ -124,7 +130,6 @@
     var(--bg),
     var(--bg),
     var(--bg)
-
   background-position:
     left 0px bottom calc(var(--key-size) * 0),
     left 0px bottom calc(var(--key-size) * 5),
@@ -133,13 +138,12 @@
     left 0px bottom calc(var(--key-size) * 6),
     left 0px bottom calc(var(--key-size) * 8),
     left 0px bottom calc(var(--key-size) * 10)
+
 .pianoroll-roll-time
   background-image:
-    linear-gradient(to right, #000f, #0008 3px,#0000 4px),
-    repeating-linear-gradient(
-      to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*var(--x-sub)*1px)),
-    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x)*1px))
-
+    linear-gradient(to right, #000f, #0008 3px, #0000 4px),
+    repeating-linear-gradient(to right, #999, #999 var(--line-width), transparent 0, transparent calc(var(--zoom-x) * var(--x-sub) * 1px)),
+    repeating-linear-gradient(to right, #777, #777 var(--line-width), transparent 0, transparent calc(var(--zoom-x) * 1px))
   background-position:
     left,
     left 0px bottom calc(var(--key-size) * 0),
@@ -149,6 +153,7 @@
   position absolute
   top 0
   left 0
+
   >div
     position absolute
     --width 1
@@ -159,11 +164,14 @@
     background-color orangered
     border 1px solid black
     cursor grab
+
     &.selected
       background-color #f
       cursor grabbing
+
     .is-resizing &
-      cursor: ew-resize
+      cursor ew-resize
+
     >.resize-handle
       position absolute
       top 0
@@ -173,6 +181,7 @@
       max-width 10px
       transform translateX(50%)
       cursor ew-resize
+
       &:after
         content ''
         display block
@@ -182,4 +191,3 @@
         right 50%
         bottom 0
         background-color red
-
