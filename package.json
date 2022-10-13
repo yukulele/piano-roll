@@ -9,7 +9,8 @@
   "scripts": {
     "build": "make",
     "watch": "make watch",
-    "serve": "make serve"
+    "serve": "make serve",
+    "dev": "make dev"
   },
   "dependencies": {
     "http-server": "^14.0.0"
